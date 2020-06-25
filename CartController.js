@@ -4,6 +4,7 @@ const port = 8080;
 const bodyParser = require('body-parser');
 const cartService = require('./CartService.js');
 const dbConfig = require('./config/DatabaseConfig.js');
+const expressOasGenerator = require('express-oas-generator');
 
 app.listen(port, () => console.log('Cart is listening, please proceed...'));
 
@@ -11,6 +12,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+expressOasGenerator.init(app, {});
 app.use(bodyParser.json());
 
 /* app services starts */
