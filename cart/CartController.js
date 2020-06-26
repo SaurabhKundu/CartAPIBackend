@@ -1,34 +1,29 @@
 const express = require('express');
 const app = express();
-const port = 8080;
 const bodyParser = require('body-parser');
 const cartService = require('./CartService.js');
-const dbConfig = require('./config/DatabaseConfig.js');
-const expressOasGenerator = require('express-oas-generator');
-
-app.listen(port, () => console.log('Cart is listening, please proceed...'));
+const cartRouter = express.Router();
+const auth = require('../config/auth');
 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-expressOasGenerator.init(app, {});
 app.use(bodyParser.json());
 
 /* app services starts */
 
 //Gives app details
-app.get('/', cartService.getAppDetails);
+cartRouter.get('/', auth, cartService.getAppDetails);
 
 /* app services ends */
 
 /* product services starts */
 
 //add produts to Db
-app.post('/products', cartService.addProductToDb);
+cartRouter.post('/products', auth, cartService.addProductToDb);
 
 //delete  products by id
-app.delete('/products/:productId', async (request, response) => {
+cartRouter.delete('/products/:productId', auth, async (request, response) => {
     let data = cartService.deleteProductById(request);
     data.then(response.status(204).send("Product deleted..."))
     .catch(error => {
@@ -37,7 +32,7 @@ app.delete('/products/:productId', async (request, response) => {
     });
 });
 //get all products from Db
-app.get('/products', async (request, response) => {
+cartRouter.get('/products', auth, async (request, response) => {
     let allProducts = cartService.getAllProductsFromDb();
     allProducts.then(products => {
         console.log(products);
@@ -56,10 +51,10 @@ app.get('/products', async (request, response) => {
 /* cart services starts */
 
 //add products to cart, cart will contain only productIds
-app.post('/cart/:productId', cartService.addProductToCart);
+cartRouter.post('/cart/:productId', auth, cartService.addProductToCart);
 
 //Gets all products from cart
-app.get('/cart', async (request, response) => {
+cartRouter.get('/cart', auth, async (request, response) => {
     let cartDetails = cartService.getAllProductsInCart(request, response);
     cartDetails.then(cartItems => response.status(200).send(cartItems))
     .catch(error => {
@@ -69,7 +64,7 @@ app.get('/cart', async (request, response) => {
 });
 
 //delete product from cart
-app.delete('/cart/:productId', async(request, response) => {
+cartRouter.delete('/cart/:productId', auth, async(request, response) => {
     let deletedProduct = cartService.deleteProductFromCart(request);
     deletedProduct.then(response.status(204).send("<h3>Item removed from cart</h3>"))
     .catch(error => {
@@ -79,7 +74,7 @@ app.delete('/cart/:productId', async(request, response) => {
 });
 
 //calculate total cost of products in cart
-app.get('/cart/total', async(request, response) => {
+cartRouter.get('/cart/total', auth, async(request, response) => {
     let cartTotal = cartService.getTotalCartCost();
     cartTotal.then(totalCost => response.status(200).send("<h1>Total Cost : </h1>" + totalCost))
     .catch(error => {
@@ -89,3 +84,5 @@ app.get('/cart/total', async(request, response) => {
 });
 
 /* cart services ends */
+
+exports.cartRouter = cartRouter;
