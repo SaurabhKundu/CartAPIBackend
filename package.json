@@ -1,13 +1,14 @@
 {
   "name": "cartapi",
   "version": "1.0.0",
-  "description": "a simple cart api",
+  "description": "A simple cart api",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
