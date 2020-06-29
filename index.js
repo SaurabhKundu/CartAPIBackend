@@ -20,3 +20,4 @@ app.use("/api", cartRouter);
 
 app.listen(port, () => console.log('Server is up..please proceed...'));
 
+module.exports = app;

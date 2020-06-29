@@ -15,7 +15,7 @@ let getAllProductsInCart = async function(request, response) {
 };
 
 exports.getAppDetails = (request, response) => {
-    response.status(200).send("<h1>Cart is ready....<h1>");
+    response.status(200).send("Cart is ready....");
 };
 
 exports.addProductToDb = (request, response) => {
